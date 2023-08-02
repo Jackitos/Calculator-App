@@ -67,97 +67,78 @@ export default function calculator() {
             });
         });
         equals.addEventListener("click", e => {
-            if (op.length > 0) {
-                console.log("Hola")
-                let result
-                let num2 = parseInt(display.textContent)
+            // if (op.length > 0) {
+            //     console.log("Hola")
+            //     let result
+            //     let num2 = parseInt(display.textContent)
 
-                console.log("Display:", display.textContent)
-                console.log("Numero 2:", num2)
+            //     console.log("Display:", display.textContent)
+            //     console.log("Numero 2:", num2)
 
-                switch (op) {
-                    case "+":
-                        result = num1 + num2
-                        break;
+            //     switch (op) {
+            //         case "+":
+            //             result = num1 + num2
+            //             break;
 
-                    case "-":
-                        result = num1 - num2
-                        break;
+            //         case "-":
+            //             result = num1 - num2
+            //             break;
 
-                    case "x":
-                        result = num1 * num2
-                        break;
+            //         case "x":
+            //             result = num1 * num2
+            //             break;
 
-                    case "/":
-                        result = num1 / num2
-                        break;
+            //         case "/":
+            //             result = num1 / num2
+            //             break;
 
-                    default:
-                        alert("Operador inválido")
-                }
-                display.textContent = result.toString()
-                console.log("Resultado:", result)
-                op = ''
+            //         default:
+            //             alert("Operador inválido")
+            //     }
+            //     display.textContent = result.toString()
+            //     console.log("Resultado:", result)
+            //     op = ''
+            // }
+            // else {
+            //     display.textContent
+            // }
+            let result
+            let num2 = parseInt(display.textContent)
+
+            console.log("Display:", display.textContent)
+            console.log("Numero 2:", num2)
+
+            switch (op) {
+                case "+":
+                    result = num1 + num2
+                    break;
+
+                case "-":
+                    result = num1 - num2
+                    break;
+
+                case "x":
+                    result = num1 * num2
+                    break;
+
+                case "/":
+                    result = num1 / num2
+                    break;
+
+                /*Esto lo saco ya que cuando pongo el igual sin ningun operador no funciona y tira el alert (Lo mejorare despues)*/
+                // default:
+                //     alert("Operador inválido")
+            }
+            if (result === Infinity) {
+                display.textContent = "Error"
             }
             else {
-                display.textContent
+                display.textContent = result.toString()
+                console.log("Resultado:", result)
+                // op = ''
             }
         });
     }
-
-
-
-    // function calculates() {
-    //     operators.forEach(btn => {
-    //         btn.addEventListener('click', e => {
-    //             console.log("valor display:", display.textContent)
-    //             let num1 = parseInt(display.textContent)
-    //             console.log("Numero 1:", num1)
-    //             display.textContent = '0'
-    //             let op = btn.textContent
-
-    //             equals.addEventListener("click", e => {
-    //                 let result
-    //                 let num2 = parseInt(display.textContent)
-    //                 console.log("Display:", display.textContent)
-    //                 console.log("Numero 2:", num2)
-
-    //                 switch (op) {
-    //                     case "+".trim():
-    //                         result = num1 + num2
-    //                         display.textContent = '0'
-    //                         display.textContent = result
-    //                         console.log("Resultado:", result)
-    //                         break
-
-    //                     case "-".trim():
-    //                         result = num1 - num2
-    //                         display.textContent = '0'
-    //                         display.textContent = result
-    //                         console.log("Resultado:", result)
-    //                         break
-
-    //                     case "x".trim():
-    //                         result = num1 * num2
-    //                         display.textContent = '0'
-    //                         display.textContent = result
-    //                         console.log("Resultado:", result)
-    //                         break
-
-    //                     case "/".trim():
-    //                         result = num1 / num2
-    //                         display.textContent = '0'
-    //                         display.textContent = result
-    //                         console.log("Resultado:", result)
-    //                         break
-
-    //                     default:
-    //                         alert("hola")
-    //                 }
-    //             })
-    //         })
-    //     })
-    // }
 
     clearDisplay()
     displayNumbers()
