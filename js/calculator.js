@@ -9,9 +9,14 @@ export default function calculator() {
         operators = d.querySelectorAll('#operator')
 
     let currentNumber = '0',
-        num1 = null,
-        num2 = null,
-        operator = null
+        stack = [],
+        operator = null,
+        operatorMap = {
+            '+': (a, b) => a + b,
+            '-': (a, b) => a - b,
+            'x': (a, b) => a * b,
+            '/': (a, b) => b === 0 ? "Error" : a / b
+        }
 
     function updateDisplay() {
         return display.textContent = currentNumber
@@ -19,11 +24,10 @@ export default function calculator() {
     }
 
     function clearDisplay() {
-        currentNumber = '0'
-        num1 = null
-        num2 = null
-        operator = null
-        updateDisplay()
+        currentNumber = '0';
+        stack = [];
+        operator = null;
+        updateDisplay();
     }
 
     function appendNumbers(number) {
@@ -37,17 +41,37 @@ export default function calculator() {
     }
 
     function applyOperator(selectedOperator) {
-        if (num2 !== null) {
-            calculates()
-            num1 = parseFloat(currentNumber.replace(",", "."))
-            num2 = null
+        if (selectedOperator === '%') {
+            const num = parseFloat(currentNumber.replace(",", "."));
+            currentNumber = (num / 100).toString().replace(".", ",");
+            updateDisplay();
+            return;
+        }
+        else if (selectedOperator === '+/-') {
+            const num = parseFloat(currentNumber.replace(",", "."));
+            currentNumber = (num * -1).toString().replace(".", ",");
+            updateDisplay();
+            return;
+        }
+        if (currentNumber !== '') {
+            stack.push(parseFloat(currentNumber));
+            console.log(currentNumber)
+            currentNumber = '';
+            console.log(stack)
+        }
+        if (stack.length >= 2) {
+            const num2 = stack.pop();
+            const num1 = stack.pop();
+            const result = operatorMap[operator](num1, num2);
+            stack.push(result);
+            operator = selectedOperator
+            currentNumber = result.toString();
+            updateDisplay();
+            currentNumber = '';
         }
         else {
-            num1 = parseFloat(currentNumber.replace(",", "."))
+            operator = selectedOperator
         }
-        operator = selectedOperator
-        currentNumber = '0'
-        updateDisplay()
     }
 
     function appendDecimal() {
@@ -57,79 +81,91 @@ export default function calculator() {
         updateDisplay()
     }
 
-    function calculates() {
-        if (num2 === null) {
-            // Si num2 es null, sumamos el valor de num2 a currentNumber
-            if (operator === "+") {
-                currentNumber = (parseFloat(currentNumber.replace(",", ".")) + num1).toString();
-            } else if (operator === "-") {
-                currentNumber = (parseFloat(currentNumber.replace(",", ".")) - num1).toString();
-            } else if (operator === "x") {
-                currentNumber = (parseFloat(currentNumber.replace(",", ".")) * num1).toString();
-            } else if (operator === "/") {
-                currentNumber = (parseFloat(currentNumber.replace(",", ".")) / num1).toString();
-            }
-        }
-        else {
-            num2 = parseFloat(currentNumber.replace(",", "."))
-            let result
-            switch (operator) {
-                case "+":
-                    result = num1 + num2
-                    break;
+    // function calculates() {
+    //     if (num2 === null) {
+    //         // Si num2 es null, sumamos el valor de num2 a currentNumber
+    //         if (operator === "+") {
+    //             currentNumber = (parseFloat(currentNumber.replace(",", ".")) + num1).toString();
+    //         } else if (operator === "-") {
+    //             currentNumber = (parseFloat(currentNumber.replace(",", ".")) - num1).toString();
+    //         } else if (operator === "x") {
+    //             currentNumber = (parseFloat(currentNumber.replace(",", ".")) * num1).toString();
+    //         } else if (operator === "/") {
+    //             currentNumber = (parseFloat(currentNumber.replace(",", ".")) / num1).toString();
+    //         }
+    //     }
+    //     else {
+    //         num2 = parseFloat(currentNumber.replace(",", "."))
+    //         let result
+    //         switch (operator) {
+    //             case "+":
+    //                 result = num1 + num2
+    //                 break;
 
-                case "-":
-                    result = num1 - num2
-                    break;
+    //             case "-":
+    //                 result = num1 - num2
+    //                 break;
 
-                case "x":
-                    result = num1 * num2
-                    break;
+    //             case "x":
+    //                 result = num1 * num2
+    //                 break;
 
-                case "/":
-                    if (parseFloat(num2) === 0) {
-                        currentNumber = "Error"
-                        updateDisplay()
-                        return
-                    }
-                    result = num1 / num2
-                    break;
+    //             case "/":
+    //                 if (parseFloat(num2) === 0) {
+    //                     currentNumber = "Error"
+    //                     updateDisplay()
+    //                     return
+    //                 }
+    //                 result = num1 / num2
+    //                 break;
 
-                default:
-                    return
-            }
-            currentNumber = result.toString()
-            num1 = parseFloat(currentNumber.replace(",", "."));
-        }
-        updateDisplay()
+    //             default:
+    //                 return
+    //         }
+    //         currentNumber = result.toString()
+    //         num1 = parseFloat(currentNumber.replace(",", "."));
+    //     }
+    //     updateDisplay()
 
-        // operators.forEach(btn => {
-        //     btn.addEventListener('click', e => {
-        //         console.log("valor display:", display.textContent)
+    //     // operators.forEach(btn => {
+    //     //     btn.addEventListener('click', e => {
+    //     //         console.log("valor display:", display.textContent)
 
-        //         num1 = parseInt(display.textContent)
-        //         console.log("Numero 1:", num1)
+    //     //         num1 = parseInt(display.textContent)
+    //     //         console.log("Numero 1:", num1)
 
-        //         op = btn.textContent;
-        //         if (op === "+/-") {
-        //             display.textContent = num1 * -1
-        //         }
-        //         else if (op === "%") {
-        //             num1 = parseFloat(display.textContent)
-        //             display.textContent = num1 /= 100
-        //             console.log("valor display en %:", display.textContent)
-        //             console.log("Numero 1 en %:", num1)
-        //         }
-        //         else {
-        //             display.textContent = '0'
-        //         }
-        //     });
-        // });
-    }
+    //     //         op = btn.textContent;
+    //     //         if (op === "+/-") {
+    //     //             display.textContent = num1 * -1
+    //     //         }
+    //     //         else if (op === "%") {
+    //     //             num1 = parseFloat(display.textContent)
+    //     //             display.textContent = num1 /= 100
+    //     //             console.log("valor display en %:", display.textContent)
+    //     //             console.log("Numero 1 en %:", num1)
+    //     //         }
+    //     //         else {
+    //     //             display.textContent = '0'
+    //     //         }
+    //     //     });
+    //     // });
+    // }
 
     equals.addEventListener("click", e => {
-        calculates()
-        num2 = null
+        // calculates()
+        if (currentNumber !== '') {
+            stack.push(parseFloat(currentNumber));
+            currentNumber = '';
+        }
+        if (operator !== null && stack.length >= 2) {
+            const num2 = stack.pop();
+            const num1 = stack.pop();
+            const result = operatorMap[operator](num1, num2);
+            stack.push(result);
+            currentNumber = result.toString();
+            updateDisplay();
+            stack = [];
+        }
     })
     clear.addEventListener('click', clearDisplay)
     numbers.forEach(btn => btn.addEventListener("click", e => appendNumbers(btn.textContent)))
